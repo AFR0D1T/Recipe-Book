@@ -201,10 +201,10 @@ $(document).ready(async function() {
         }
 
         const commentsForm = isAuthenticated() ? `
-            <form id="create-form">
+            <form id="create-comments" data-id="${recipes.id}">
                 <div class="mb-3">
                     <label for="NameInput" class="form-label">Comment</label>
-                    <input type="text" name="text" class="form-control" id="nameInput" required minlength="5">
+                    <input type="text" name="text" class="form-control" id="nameInput" required>
                 </div>
                 
                 <button type="submit" class="btn btn-primary">Send</button>
@@ -254,12 +254,34 @@ $(document).ready(async function() {
             comments.forEach(comment => {
             $('#comments-block').append(`
                 <div class="border rounded p-2 mb-2">
+                    <h6>Authro: ${comment.author}</h6>
                     <p>${comment.text}</p>
                 </div>
             `);
         });
         }
     }
+
+    container.on('submit', '#create-comments', async function(event) {
+        event.preventDefault()
+
+        const commentId = $(this).data('id')
+        const recipeId = $(this).data('id')
+        const formData = serialize($(this).serializeArray())
+
+        try {
+            await authRequest({
+                url: baseUrl + `recipes/${recipeId}/comments/`,
+                method: 'POST',
+                data: formData
+            })
+
+            const recipe = await recipesGet(recipeId)
+            await recipesDetail(recipe)
+        } catch (err) {
+
+        }
+    })
 
     container.on('click', '.view-recipes', async function (event) {
         event.preventDefault()
