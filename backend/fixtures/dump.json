@@ -1,0 +1,95 @@
+[
+{
+  "model": "accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$tsOWm3G6TAR1mSeWYhex8x$xC60iC+cc+TnpzjgOPaaMrG7dPP78lii6l0uUZrAe2o=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "bogdan",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-05-23T08:37:59.964Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$7g8YiScZLL4L9srqs6K6So$POYCnxQ+j4rVTkA/kWyECgWVEcfG+aqDeDp+XDuCQT8=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@admin.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-23T08:59:13.802Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 1,
+  "fields": {
+    "name": "Shoyu Chicken",
+    "description": "Shoyu chicken is a popular Hawaiian dish often served with rice. The word shoyu is Japanese for soy sauce. Let the chicken soak in the marinade for at least an hour; the longer the better.",
+    "ingredients": "1 cup soy sauce\n1 cup brown sugar\n1 cup water\n1 onion, chopped\n4 cloves garlic, minced\n1 tablespoon grated fresh ginger root\n1 tablespoon ground black pepper\n1 tablespoon dried oregano\n1 teaspoon crushed red pepper flakes (Optional)\n1 teaspoon ground cayenne pepper (Optional)\n1 teaspoon ground paprika (Optional)\n5 pounds skinless chicken thighs",
+    "cooking_time": 30,
+    "image": "image/AI0207-1_Shoyu-Chicken_s4x3.jpg",
+    "created_at": "2026-05-23T08:38:33.648Z",
+    "author": [
+      "bogdan"
+    ]
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 2,
+  "fields": {
+    "name": "German Chocolate Dump Cake",
+    "description": "This German chocolate dump cake tastes like the real thing, but batter, filling, and topping elements are all baked together. It has the pecan and coconut flavors you expect, and the cream cheese swirl carries the frosting flavor. ItТs nicely moist, and you get crunchy bitsЧreally enjoyable.",
+    "ingredients": "1 2/3 cups toasted pecans, chopped, divided\n1 cup sweetened flaked coconut\n1 (2-layer size) package devil's food cake mix\neggs, oil, and water as specified for the cake mix\n1 (8 ounce) package cream cheese, softened\n1/2 cup butter, melted\n2 teaspoons vanilla extract\n1/4 teaspoon salt\n1 cup powdered sugar\n2/3 cup semisweet chocolate chips",
+    "cooking_time": 35,
+    "image": "image/German-Chocolate-Dump-Cake_TOHVP25_118026_MR_05_06_1.jpg",
+    "created_at": "2026-05-23T08:40:27.447Z",
+    "author": [
+      "bogdan"
+    ]
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 3,
+  "fields": {
+    "name": "Tacos Gobernador",
+    "description": "This German chocolate dump cake tastes like the real thing, but batter, filling, and topping elements are all baked together. It has the pecan and coconut flavors you expect, and the cream cheese swirl carries the frosting flavor. ItТs nicely moist, and you get crunchy bitsЧreally enjoyable.",
+    "ingredients": "Twelve 6-inch corn tortillas\nNeutral oil such as canola or vegetable\nMayonnaise\n1 1/2 cups grated Manchego, asadero, or Chihuahua cheese cheese (about 135g) (see notes) \nChopped cilantro for serving\nLime wedges for serving",
+    "cooking_time": 60,
+    "image": "image/tacos-gobernador-900x900.jpg",
+    "created_at": "2026-05-23T08:43:37.493Z",
+    "author": [
+      "bogdan"
+    ]
+  }
+},
+{
+  "model": "recipes.comment",
+  "pk": 1,
+  "fields": {
+    "text": "Good",
+    "recipe": 1,
+    "author": [
+      "bogdan"
+    ],
+    "created_at": "2026-05-23"
+  }
+}
+]
