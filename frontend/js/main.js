@@ -183,12 +183,33 @@ $(document).ready(async function() {
 
     async function recipesDetail(recipes) {
         console.log(recipes)
-
         container.empty()
 
         const currentUser = getCurrentUser()
-
         const isOwner = currentUser && recipes.author === currentUser.username
+
+        let comments = [];
+
+        try {
+            comments = await $.ajax({
+                url: baseUrl + `recipes/${recipes.id}/comments/`,
+                method: 'GET',
+            });
+        } catch (err) {
+            console.log('Comments error', err)
+
+        }
+
+        const commentsForm = isAuthenticated() ? `
+            <form id="create-form">
+                <div class="mb-3">
+                    <label for="NameInput" class="form-label">Comment</label>
+                    <input type="text" name="text" class="form-control" id="nameInput" required minlength="5">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Send</button>
+           </form>
+        ` : ''
 
         const editButtons = isOwner ? `
                 <button class="btn btn-danger delete-recipes " data-id="${recipes.id}">Delete</button>
@@ -217,8 +238,27 @@ $(document).ready(async function() {
             
             <p>${recipes.description}</p>
             
+            <hr>
+            <h4>Comments</h4>
+            <div id="comments-block"></div>
+            
+            ${commentsForm}
+            
+            <hr>
             ${editButtons}
-        `)
+        `);
+
+        if (!comments.length) {
+            $('#comments-block').append(`<p>No comments</p>`);
+        } else {
+            comments.forEach(comment => {
+            $('#comments-block').append(`
+                <div class="border rounded p-2 mb-2">
+                    <p>${comment.text}</p>
+                </div>
+            `);
+        });
+        }
     }
 
     container.on('click', '.view-recipes', async function (event) {
