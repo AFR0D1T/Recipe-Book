@@ -121,7 +121,7 @@ $(document).ready(async function() {
             );
         } else {
             container.append(
-                `<div id='recipes-block' class="d-flex justify-content-evenly"></div>`
+                `<div id='recipes-block' class="d-flex justify-content-evenly row row-cols-1 row-cols-md-4 g-4"></div>`
             );
 
             const currentUser = getCurrentUser()
@@ -135,19 +135,22 @@ $(document).ready(async function() {
                 `: ''
 
                 $('#recipes-block').append(`
-                    <div class="col-md-3 mb-3">
-                    <a href="#" class="text-decoration-none h-100 d-block w-100 view-recipes" id="view-recipes" data-id="${recipes.id}">
-                    <div class="card h-100">
-                        <img src="${recipes.image}" class="card-img-top" style="height: 250px; object-fit: cover;"
-                         alt="photo-cooking">
-                      <div class="card-body">
-                        <h5 class="card-title">${recipes.name}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">${recipes.author}</h6>
-                        <p class="card-text">${recipes.cooking_time} min</p>
-                        <h6 class="card-subtitle mb-2 text-muted">${new Date(recipes.created_at).toDateString('ru-Ru')}</h6>
-                      </div>
-                    </div>
-                    </a>
+                    <div class="col">
+                        <a href="#" class="text-decoration-none h-100 d-block w-100 view-recipes" id="view-recipes" 
+                        data-id="${recipes.id}">
+                        <div class="card h-100">
+                            <img src="${recipes.image}" class="card-img-top" style="height: 250px; object-fit: cover;"
+                             alt="photo-cooking">
+                            <div class="card-body">
+                                <h5 class="card-title">${recipes.name}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">${recipes.author}</h6>
+                                <p class="card-text">${recipes.cooking_time} min</p>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    ${new Date(recipes.created_at).toDateString('ru-Ru')}
+                                </h6>
+                            </div>
+                        </div>
+                        </a>
                     </div>
                     `
                 );
@@ -193,17 +196,27 @@ $(document).ready(async function() {
             `: ''
 
         container.append(`
-        <img src="${recipes.image}" class="img-thumbnail" alt="photo">
-        <h2>${recipes.name}</h2>
-        <h6>Author: ${recipes.author}</h6>
-        <hr>
-        <p>Ingredients: ${recipes.ingredients}</p>
-        <hr>
-        <h6>Cooking time: ${recipes.cooking_time}</h6>
-        <h6>Created at ${new Date(recipes.created_at).toLocaleString('ru-Ru')}</h6>
-        <hr>
-        <p>${recipes.description}</p>
-        <br>
+            <img src="${recipes.image}" class="rounded mx-auto d-block w-100"
+             style="
+                max-width:700px;
+                height:400px;
+                object-fit:cover;
+             "
+             alt="photo">
+            <h2>${recipes.name}</h2>
+            <h6>Author: ${recipes.author}</h6>
+            <hr>
+            
+            <p><b>Ingredients:</b> ${recipes.ingredients}</p>
+            <hr>
+            
+            <h6>Cooking time: ${recipes.cooking_time}</h6>
+            <h6>Created at ${new Date(recipes.created_at).toLocaleString('ru-Ru')}</h6>
+            
+            <hr>
+            
+            <p>${recipes.description}</p>
+            
             ${editButtons}
         `)
     }
@@ -277,7 +290,7 @@ $(document).ready(async function() {
             
             <div class="mb-3">
                 <label for="DescriptionInput" class="form-label">Description</label>
-                <textarea name="text" id="DescriptionInput" class="form-control" required rows="10"></textarea>
+                <textarea name="description" id="DescriptionInput" class="form-control" required rows="10"></textarea>
             </div>
             
             <div class="mb-3">
@@ -287,12 +300,12 @@ $(document).ready(async function() {
             
             <div class="mb-3">
                 <label for="cookingTimeInput" class="form-label">Cooking time</label>
-                <input type="number" name="cookingTime" class="form-control" id="cookingTimeInput" required>
+                <input type="number" name="cooking_time" class="form-control" id="cookingTimeInput" required>
             </div>
             
             <div class="mb-3">
               <label for="imageFile" class="form-label">Default file input example</label>
-              <input class="form-control" type="file" id="imageFile">
+              <input class="form-control" type="file" id="imageFile" name="image">
             </div>
             
             <button type="submit" class="btn btn-primary">Create recipes</button>
@@ -311,7 +324,7 @@ $(document).ready(async function() {
         console.log(formData);
 
         try {
-            await $.ajax({
+            await authRequest({
                 url: baseUrl + 'recipes/',
                 method: 'POST',
                 data: formData,
@@ -322,11 +335,8 @@ $(document).ready(async function() {
             container.empty();
             await recipesList();
         } catch (err) {
-            if (err.status === 400) {
-                alert('Error validate: ' + err);
-            } else {
-                console.log('Error create recipes ', err);
-            }
+            console.log(err.responseJSON);
+            alert(JSON.stringify(err.responseJSON));
         }
     });
 
@@ -392,6 +402,90 @@ $(document).ready(async function() {
                 </div>
             </div>
         `);
+    });
+
+    container.on('click', '.update-recipes', async function (event) {
+        event.preventDefault()
+
+        if (!isAuthenticated()) {
+            alert('Log in to update a recipe.')
+            return
+        }
+
+        const recipeID = event.currentTarget.dataset['id']
+        const recipe = await recipesGet(recipeID)
+
+        if (!recipe) return
+
+        container.empty()
+
+        container.append(`
+        <h1>Edit recipes</h1>
+        
+        <form id="update-form" data-id="${recipe.id}">
+            <div class="mb-3">
+                <label for="NameInput" class="form-label">Title</label>
+                <input type="text" name="name" class="form-control" id="nameInput" required minlength="5" 
+                value="${recipe.name}">
+            </div>
+            
+            <div class="mb-3">
+                <label for="DescriptionInput" class="form-label">Description</label>
+                <textarea name="description" id="DescriptionInput" class="form-control" required rows="10"
+                >${recipe.description}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="IngredientsInput" class="form-label">Ingredients</label>
+                <input type="text" name="ingredients" class="form-control" id="ingredientsInput" required 
+                value="${recipe.ingredients}">
+            </div>
+            
+            <div class="mb-3">
+                <label for="cookingTimeInput" class="form-label">Cooking time</label>
+                <input type="number" name="cooking_time" class="form-control" id="cookingTimeInput" required
+                value="${recipe.cooking_time}">
+            </div>
+            
+            <div class="mb-3">
+              <label for="imageFile" class="form-label">Default file input example</label>
+              <input class="form-control" type="file" id="imageFile" name="image" value="${recipe.image}">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary">Cancel</button>
+        </form>
+        `);
+    });
+
+    container.on('submit', '#update-form', async function (event) {
+        event.preventDefault()
+
+        const recipesID = $(this).data('id')
+        const formData = new FormData(this);
+        const imageInput = $('#imageFile')[0]
+
+        if (imageInput.files.length === 0) {
+            formData.delete('image')
+        }
+
+        try {
+            await authRequest({
+                url: baseUrl + `recipes/${recipesID}/`,
+                method: 'PATCH',
+                data: formData,
+                processData: false,
+                contentType: false,
+            })
+
+            console.log('Recipe update')
+            const recipe = await recipesGet(recipesID)
+            await recipesDetail(recipe)
+
+        } catch (err) {
+            console.log(err.responseJSON)
+            console.log('Error recipes update', err)
+        }
     });
 
     container.on('click', '.delete-recipes', async function (event) {
